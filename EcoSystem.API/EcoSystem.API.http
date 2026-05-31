@@ -10,3 +10,20 @@ Content-Type: application/json
   "stock": 50,
   "sku": "ECO-PANEL-100"
 }
+
+### Actualizar el precio de nuestro Panel Solar (Cambiándolo de 120.50 a 99.99)
+PUT http://localhost:5099/api/productos/2
+Content-Type: application/json
+
+{
+  "id": 2,
+  "categoriaId": 2,
+  "nombre": "Panel Solar 100W",
+  "descripcion": "Panel monocristalino de alta eficiencia. ¡AHORA EN DESCUENTO!",
+  "precio": 99.99,
+  "stock": 50,
+  "sku": "ECO-PANEL-100"
+}
+
+### Eliminar el Panel Solar
+DELETE http://localhost:5099/api/productos/2

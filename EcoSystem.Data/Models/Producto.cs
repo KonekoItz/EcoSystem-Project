@@ -11,6 +11,6 @@ namespace EcoSystem.Data.Models
         public string? Sku { get; set; }
 
         // Propiedad de navegación para Entity Framework
-        public Categoria Categoria { get; set; } = null!;
+        public Categoria? Categoria { get; set; }
     }
 }

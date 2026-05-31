@@ -2,25 +2,27 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuración de la base de datos
+// Configuración de la base de datos (PostgreSQL)
 builder.Services.AddDbContext<EcoSystem.API.Data.AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 1. Le decimos a la API que usaremos Controladores
 builder.Services.AddControllers();
 
-builder.Services.AddOpenApi();
+// 1. Agregamos las herramientas para generar Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// 2. Activamos la interfaz gráfica "boni" de Swagger 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 
-// 2. Activamos las rutas de los controladores
 app.MapControllers();
 
 app.Run();

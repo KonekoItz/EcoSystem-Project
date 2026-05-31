@@ -67,5 +67,57 @@ namespace EcoSystem.API.Controllers
             // Devuelve un código 201 (Created) confirmando que se guardó exitosamente
             return CreatedAtAction(nameof(GetProductos), new { id = producto.Id }, producto);
         }
+        // PUT: api/productos/2
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutProducto(int id, Producto producto)
+        {
+            // Verificamos que el ID de la URL coincida con el ID del cuerpo (JSON)
+            if (id != producto.Id)
+            {
+                return BadRequest("El ID de la ruta no coincide con el ID del producto.");
+            }
+
+            // Le decimos a Entity Framework que este producto ha sido modificado
+            _context.Entry(producto).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                // Si alguien borró el producto antes de que pudieras actualizarlo
+                if (!_context.Productos.Any(e => e.Id == id))
+                {
+                    return NotFound("El producto que intentas actualizar ya no existe.");
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            // Devuelve un 204 (No Content) que significa: "Todo salió bien, pero no tengo nada nuevo que mostrarte"
+            return NoContent();
+        }
+
+        // DELETE: api/productos/2
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProducto(int id)
+        {
+            // Primero buscamos si el producto existe
+            var producto = await _context.Productos.FindAsync(id);
+            if (producto == null)
+            {
+                return NotFound("El producto que intentas eliminar no fue encontrado.");
+            }
+
+            // Le decimos a la base de datos que lo borre
+            _context.Productos.Remove(producto);
+            await _context.SaveChangesAsync();
+
+            // Devuelve un 204 confirmando la eliminación
+            return NoContent();
+        }
     }
 }
