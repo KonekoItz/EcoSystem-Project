@@ -1,6 +1,12 @@
-@EcoSystem.API_HostAddress = http://localhost:5099
+### Agregar un nuevo producto
+POST http://localhost:5099/api/productos
+Content-Type: application/json
 
-GET {{EcoSystem.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
+{
+  "categoriaId": 2,
+  "nombre": "Panel Solar 100W",
+  "descripcion": "Panel monocristalino de alta eficiencia.",
+  "precio": 120.50,
+  "stock": 50,
+  "sku": "ECO-PANEL-100"
+}
