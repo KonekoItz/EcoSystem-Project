@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using EcoSystem.Business.Interfaces;
+using EcoSystem.Business.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,7 @@ builder.Services.AddControllers();
 // 1. Agregamos las herramientas para generar Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IProductoService, ProductoService>();
 
 var app = builder.Build();
 
