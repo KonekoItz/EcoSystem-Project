@@ -1,4 +1,4 @@
-using EcoSystem.API.Data; // Ajusta este namespace si tu AppDbContext está en EcoSystem.Data
+using EcoSystem.Data;
 using EcoSystem.Business.Interfaces;
 using EcoSystem.Data.Models;
 using Microsoft.EntityFrameworkCore;

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configuración de la base de datos (PostgreSQL)
-builder.Services.AddDbContext<EcoSystem.API.Data.AppDbContext>(options =>
+builder.Services.AddDbContext<EcoSystem.Data.AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllers();

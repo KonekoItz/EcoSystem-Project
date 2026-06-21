@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using EcoSystem.Data.Models;
 
-namespace EcoSystem.API.Data
+namespace EcoSystem.Data
 {
     public class AppDbContext : DbContext
     {

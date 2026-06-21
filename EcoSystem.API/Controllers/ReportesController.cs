@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using EcoSystem.API.Data;
+using EcoSystem.Data;
 
 namespace EcoSystem.API.Controllers
 {
