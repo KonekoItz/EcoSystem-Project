@@ -1,12 +1,17 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.Input;
+using EcoSystem.Client.Services;
+using Microsoft.AspNetCore.Components;
 
 namespace EcoSystem.Client.ViewModels;
 
 public class LoginViewModel : INotifyPropertyChanged
 {
-    // Contrato esencial para actualizar la UI en tiempo real
+    private readonly ApiService _apiService;
+    private readonly TokenService _tokenService;
+    private readonly NavigationManager _navigationManager;
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     protected void OnPropertyChanged([CallerMemberName] string? name = null)
@@ -20,10 +25,10 @@ public class LoginViewModel : INotifyPropertyChanged
         get => _nombreUsuario;
         set
         {
-            if (_nombreUsuario == value) return; // Guardia de igualdad
+            if (_nombreUsuario == value) return;
             _nombreUsuario = value;
             OnPropertyChanged();
-            LoginCommand.NotifyCanExecuteChanged(); // Reevalúa si el botón debe habilitarse
+            LoginCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -40,24 +45,43 @@ public class LoginViewModel : INotifyPropertyChanged
         }
     }
 
-    public IRelayCommand LoginCommand { get; }
+    public IAsyncRelayCommand LoginCommand { get; }
     public IRelayCommand VerificarCommand { get; }
 
-    public LoginViewModel()
+    // Inyectamos los servicios de API, Token y Navegación
+    public LoginViewModel(ApiService apiService, TokenService tokenService, NavigationManager navigationManager)
     {
-        // El comando de Login evalúa si puede ejecutarse
-        LoginCommand = new RelayCommand(EjecutarLogin, PuedeEjecutarLogin);
+        _apiService = apiService;
+        _tokenService = tokenService;
+        _navigationManager = navigationManager;
 
-        // Comando para la demostración de la Firma 3
+        LoginCommand = new AsyncRelayCommand(EjecutarLoginAsync, PuedeEjecutarLogin);
         VerificarCommand = new RelayCommand(() =>
-            Console.WriteLine($"Usuario en ViewModel: {NombreUsuario} | Contraseña: {Contrasena}"));
+            Console.WriteLine($"Usuario: {NombreUsuario} | Pass: {Contrasena}"));
     }
 
     private bool PuedeEjecutarLogin() =>
         !string.IsNullOrWhiteSpace(NombreUsuario) && !string.IsNullOrWhiteSpace(Contrasena);
 
-    private void EjecutarLogin()
+    private async Task EjecutarLoginAsync()
     {
-        Console.WriteLine($"Iniciando sesión para: {NombreUsuario}");
+        Console.WriteLine($"Conectando con el servidor para autenticar a {NombreUsuario}...");
+
+        // Ejecutamos la petición POST[cite: 2]
+        var result = await _apiService.LoginAsync(NombreUsuario, Contrasena);
+
+        if (result != null && !string.IsNullOrEmpty(result.Token))
+        {
+            // Guardamos el JWT en el SecureStorage del cliente[cite: 2]
+            await _tokenService.SaveTokenAsync(result.Token, result.Expiration);
+            Console.WriteLine("¡Login exitoso! Token cifrado y guardado. Redirigiendo...");
+
+            // Redirigimos al área protegida[cite: 2]
+            _navigationManager.NavigateTo("/");
+        }
+        else
+        {
+            Console.WriteLine("Error: Credenciales incorrectas o servidor no disponible.");
+        }
     }
 }

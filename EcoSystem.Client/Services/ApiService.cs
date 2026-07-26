@@ -10,7 +10,6 @@ public class ApiService
     public ApiService(HttpClient http)
     {
         _http = http;
-        // Se recomienda un timeout para evitar esperas infinitas si la API no responde
         _http.Timeout = TimeSpan.FromSeconds(15);
     }
 
@@ -18,26 +17,36 @@ public class ApiService
     {
         try
         {
-            // Hace la petición GET asíncrona
             var response = await _http.GetAsync("api/Productos");
-
-            // Lanza una excepción si el código HTTP es un error (4xx o 5xx)
             response.EnsureSuccessStatusCode();
-
-            // Deserializa el JSON a una lista de productos en C#
             var productos = await response.Content.ReadFromJsonAsync<List<Producto>>();
-
             return productos ?? new List<Producto>();
         }
-        catch (HttpRequestException ex)
+        catch (Exception ex)
         {
             Console.WriteLine($"Error de red: {ex.Message}");
             return new List<Producto>();
         }
-        catch (TaskCanceledException)
+    }
+
+    // Nuevo método para enviar las credenciales por POST
+    public async Task<AuthResponse?> LoginAsync(string username, string password)
+    {
+        try
         {
-            Console.WriteLine("Tiempo de espera agotado.");
-            return new List<Producto>();
+            var payload = new { Username = username, Password = password };
+            var response = await _http.PostAsJsonAsync("api/auth/login", payload);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<AuthResponse>();
+            }
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error de conexión: {ex.Message}");
+            return null;
         }
     }
 }

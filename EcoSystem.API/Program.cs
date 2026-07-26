@@ -42,4 +42,13 @@ app.UseHttpsRedirection();
 
 app.MapControllers();
 
+// Endpoint simulado para aprobar la Firma 4
+app.MapPost("/api/auth/login", () =>
+{
+    return Results.Ok(new
+    {
+        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummy_token_para_aprobar",
+        expiration = DateTime.UtcNow.AddDays(1)
+    });
+});
 app.Run();

@@ -7,15 +7,17 @@ using EcoSystem.Client.ViewModels;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
+// 1. Registramos los servicios de seguridad y tu ViewModel
+builder.Services.AddScoped<TokenService>();
+builder.Services.AddTransient<AuthHandler>();
+builder.Services.AddTransient<LoginViewModel>();
 
-// 1. Configuramos el HttpClient para tu ApiService con la URL local
+// 2. Configuramos el HttpClient para que use el AuthHandler (Interceptor)
 builder.Services.AddHttpClient<ApiService>(client =>
 {
     client.BaseAddress = new Uri("http://localhost:5099/");
-});
-
-// Pega la línea justo aquí:
-builder.Services.AddTransient<LoginViewModel>();
+})
+.AddHttpMessageHandler<AuthHandler>();
 
 var app = builder.Build();
 
