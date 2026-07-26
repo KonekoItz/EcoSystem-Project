@@ -1,7 +1,78 @@
 ﻿@page "/"
+@using EcoSystem.Client.ViewModels
+@using EcoSystem.Client.Models
+@inject MainViewModel vm
+@inject IJSRuntime JS
 
-<PageTitle>Home</PageTitle>
+<div style="max-width: 800px; margin: 20px auto; font-family: sans-serif;">
+    <h2 style="color: #3371A5;">Gestión de Productos (CRUD)</h2>
 
-<h1>Hello, world!</h1>
+    <!-- Formulario Dinámico (Alta y Edición)[cite: 3] -->
+    <div style="background: #f4f4f4; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h4 style="margin-top: 0;">@(vm.EsEdicion ? "Editar Producto" : "Nuevo Producto")</h4>
 
-Welcome to your new app.
+        <input type="text" placeholder="Nombre" @bind="vm.ProductoActual.Nombre"
+               style="padding: 8px; margin-right: 10px;" />
+        <input type="number" placeholder="Precio" @bind="vm.ProductoActual.Precio"
+               style="padding: 8px; margin-right: 10px;" />
+        <input type="number" placeholder="Stock" @bind="vm.ProductoActual.Stock"
+               style="padding: 8px; margin-right: 10px;" />
+
+        <!-- Botón que muestra estado de carga[cite: 3] -->
+        <button disabled="@vm.Cargando" @onclick="vm.GuardarCommand.Execute"
+                style="background: #3371A5; color: white; padding: 10px 15px; border: none; cursor: pointer;">
+            @(vm.Cargando ? "Guardando..." : (vm.EsEdicion ? "Actualizar" : "Guardar"))
+        </button>
+    </div>
+
+    <!-- Tabla de Datos -->
+    <button @onclick="vm.CargarProductosCommand.Execute" style="margin-bottom: 15px;">Recargar Lista</button>
+
+    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+            <tr style="background: #3371A5; color: white;">
+                <th style="padding: 10px;">ID</th>
+                <th style="padding: 10px;">Nombre</th>
+                <th style="padding: 10px;">Precio</th>
+                <th style="padding: 10px;">Stock</th>
+                <th style="padding: 10px;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in vm.Productos)
+            {
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 10px;">@p.Id</td>
+                    <td style="padding: 10px;">@p.Nombre</td>
+                    <td style="padding: 10px;">$@p.Precio</td>
+                    <td style="padding: 10px;">@p.Stock</td>
+                    <td style="padding: 10px;">
+                        <button @onclick="() => vm.PrepararEdicionCommand.Execute(p)"
+                                style="margin-right: 5px;">Editar</button>
+
+                        <!-- Confirmación antes de ejecutar operación destructiva[cite: 3] -->
+                        <button @onclick="async () => await ConfirmarYEliminar(p.Id, p.Nombre)"
+                                style="background: #E28287; color: white; border: none;">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await vm.CargarProductosAsync();
+    }
+
+    // Dialogo nativo del navegador para evitar borrados accidentales[cite: 3]
+    private async Task ConfirmarYEliminar(int id, string nombre)
+    {
+        bool confirmado = await JS.InvokeAsync<bool>("confirm", $"¿Seguro que deseas eliminar el producto '{nombre}'?");
+        if (confirmado)
+        {
+            await vm.EliminarCommand.ExecuteAsync(id);
+        }
+    }
+}

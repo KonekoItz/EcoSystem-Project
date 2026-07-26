@@ -11,7 +11,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddTransient<AuthHandler>();
 builder.Services.AddTransient<LoginViewModel>();
-
+builder.Services.AddTransient<MainViewModel>();
 // 2. Configuramos el HttpClient para que use el AuthHandler (Interceptor)
 builder.Services.AddHttpClient<ApiService>(client =>
 {

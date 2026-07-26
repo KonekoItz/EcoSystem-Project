@@ -49,4 +49,36 @@ public class ApiService
             return null;
         }
     }
+    // POST - Crear recurso
+    public async Task<bool> CrearProductoAsync(Producto producto)
+    {
+        try
+        {
+            var response = await _http.PostAsJsonAsync("api/Productos", producto);
+            return response.IsSuccessStatusCode;
+        }
+        catch { return false; }
+    }
+
+    // PUT - Actualizar recurso
+    public async Task<bool> ActualizarProductoAsync(int id, Producto producto)
+    {
+        try
+        {
+            var response = await _http.PutAsJsonAsync($"api/Productos/{id}", producto);
+            return response.IsSuccessStatusCode;
+        }
+        catch { return false; }
+    }
+
+    // DELETE - Eliminar recurso[cite: 3]
+    public async Task<bool> EliminarProductoAsync(int id)
+    {
+        try
+        {
+            var response = await _http.DeleteAsync($"api/Productos/{id}");
+            return response.IsSuccessStatusCode;
+        }
+        catch { return false; }
+    }
 }
