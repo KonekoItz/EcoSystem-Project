@@ -1,0 +1,33 @@
+@page "/login"
+@using EcoSystem.Client.ViewModels
+@inject LoginViewModel vm
+
+<div style="width: 320px; margin: 50px auto; text-align: center; font-family: sans-serif;">
+    <h2 style="color: #3371A5; font-weight: bold;">EcoSystem Connect</h2>
+
+    <!-- Campo: Usuario -->
+    <div style="text-align: left; margin-bottom: 12px;">
+        <label style="color: #555;">Usuario</label>
+        <input type="text" placeholder="Nombre de usuario" @bind="vm.NombreUsuario" @bind:event="oninput"
+               style="width: 100%; padding: 8px; border: 1px solid #3371A5; box-sizing: border-box;" />
+    </div>
+
+    <!-- Campo: Contraseña -->
+    <div style="text-align: left; margin-bottom: 20px;">
+        <label style="color: #555;">Contraseña</label>
+        <input type="password" placeholder="Contraseña" @bind="vm.Contrasena" @bind:event="oninput"
+               style="width: 100%; padding: 8px; border: 1px solid #3371A5; box-sizing: border-box;" />
+    </div>
+
+    <!-- Botón de Ingreso -->
+    <button disabled="@(!vm.LoginCommand.CanExecute(null))" @onclick="vm.LoginCommand.Execute"
+            style="width: 100%; background: #3371A5; color: white; padding: 10px; font-weight: bold; border: none; margin-bottom: 10px; cursor: pointer;">
+        Ingresar
+    </button>
+
+    <!-- Botón de Prueba (Firma 3) -->
+    <button @onclick="vm.VerificarCommand.Execute"
+            style="width: 100%; background: #E28287; color: white; padding: 8px; border: none; cursor: pointer;">
+        Verificar Binding
+    </button>
+</div>

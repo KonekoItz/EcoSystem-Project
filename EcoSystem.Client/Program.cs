@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using EcoSystem.Client;
 using EcoSystem.Client.Services;
+using EcoSystem.Client.ViewModels;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -12,6 +13,9 @@ builder.Services.AddHttpClient<ApiService>(client =>
 {
     client.BaseAddress = new Uri("http://localhost:5099/");
 });
+
+// Pega la línea justo aquí:
+builder.Services.AddTransient<LoginViewModel>();
 
 var app = builder.Build();
 
