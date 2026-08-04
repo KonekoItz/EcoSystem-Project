@@ -17,9 +17,11 @@
                style="padding: 8px; margin-right: 10px;" />
         <input type="number" placeholder="Stock" @bind="vm.ProductoActual.Stock"
                style="padding: 8px; margin-right: 10px;" />
+        <input type="number" placeholder="ID Categoría" @bind="vm.ProductoActual.CategoriaId"
+               style="padding: 8px; margin-right: 10px;" />
 
         <!-- Botón que muestra estado de carga[cite: 3] -->
-        <button disabled="@vm.Cargando" @onclick="vm.GuardarCommand.Execute"
+        <button disabled="@vm.Cargando" @onclick="vm.GuardarAsync"
                 style="background: #3371A5; color: white; padding: 10px 15px; border: none; cursor: pointer;">
             @(vm.Cargando ? "Guardando..." : (vm.EsEdicion ? "Actualizar" : "Guardar"))
         </button>

@@ -15,4 +15,7 @@ public class Producto
 
     [JsonPropertyName("stock")]
     public int Stock { get; set; }
+
+    [JsonPropertyName("categoriaId")]
+    public int CategoriaId { get; set; }
 }

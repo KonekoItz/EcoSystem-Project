@@ -15,18 +15,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IProductoService, ProductoService>();
 
-// Configuración de CORS para permitir conexiones desde cualquier Frontend
+// Configuración de CORS para permitir que el frontend se comunique con la API[cite: 3]
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("PermitirTodo", policy =>
+    options.AddPolicy("PermitirCliente", policy =>
     {
-        policy.AllowAnyOrigin()   // Permite cualquier origen (Angular, React, Móvil, etc.)
-              .AllowAnyHeader()   // Permite cualquier tipo de encabezado
-              .AllowAnyMethod();  // Permite GET, POST, PUT, DELETE
+        policy.WithOrigins("http://localhost:5094") // El puerto exacto de tu cliente[cite: 3]
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
 
 var app = builder.Build();
+app.UseCors("PermitirCliente");
 
 // 2. Activamos la interfaz gráfica "boni" de Swagger 
 if (app.Environment.IsDevelopment())

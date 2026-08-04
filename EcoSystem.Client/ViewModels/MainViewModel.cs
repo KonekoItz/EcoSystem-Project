@@ -61,7 +61,7 @@ public class MainViewModel : INotifyPropertyChanged
         Cargando = false;
     }
 
-    private void PrepararEdicion(Producto producto)
+    public void PrepararEdicion(Producto producto)
     {
         EsEdicion = true;
         // Creamos una copia para no alterar la tabla antes de guardar
@@ -70,11 +70,12 @@ public class MainViewModel : INotifyPropertyChanged
             Id = producto.Id,
             Nombre = producto.Nombre,
             Precio = producto.Precio,
-            Stock = producto.Stock
+            Stock = producto.Stock,
+            CategoriaId = producto.CategoriaId // <-- ¡Esta es la línea que faltaba!
         };
     }
 
-    private async Task GuardarAsync()
+    public async Task GuardarAsync()
     {
         Cargando = true; // Deshabilita el botón mientras la petición está en vuelo[cite: 3]
 
